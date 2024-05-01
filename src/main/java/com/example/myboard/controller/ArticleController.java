@@ -1,29 +1,55 @@
 package com.example.myboard.controller;
 
 import com.example.myboard.dto.ArticleDto;
+import com.example.myboard.entity.Article;
 import com.example.myboard.service.ArticleService;
-import jakarta.validation.Valid;
+import com.example.myboard.service.PaginationService;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/articles")
-public class articleController {
+public class ArticleController {
 
     private final ArticleService articleService;
 
-    public articleController(ArticleService articleService) {
+    @Autowired
+    PaginationService paginationService;
+
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
+    }
+
+    @GetMapping("paging")
+    public String mainView(Model model,
+                           @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)Pageable pageable){
+
+        //넘겨온 페이지 번호로 리스트 받아오기
+        Page<Article> paging = articleService.pagingList(pageable);
+
+        //페이지 블럭 처리 (1, 2, 3, 4, 5)
+        int totalPage = paging.getTotalPages();
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), totalPage);
+
+        model.addAttribute("paginationBarNumbers", barNumbers);
+        model.addAttribute("paging", paging);
+        return "/articles/show_all_list";
     }
 
     @GetMapping("insert")
     public String insertView(Model model){
         model.addAttribute("articleDto", new ArticleDto());
-//        model.addAttribute("dto", new ArticleDto());
+        model.addAttribute("dto", new ArticleDto());
         return "/articles/new";
     }
     @PostMapping("insert")
@@ -57,11 +83,18 @@ public class articleController {
 //        return "redirect:/";
 //    }
 
-    @GetMapping("delete/{id}")
-    public String update(@PathVariable("id") Long id){
-        articleService.deleteById(id);
-        return "redirect:/";
-    }
+//    @GetMapping("delete/{id}")
+//    public String update(@PathVariable("id") Long id,
+//                        RedirectAttributes redirectAttributes){
+//        //1.삭제할 대상이 존재하는지 확인
+//        ArticleDto dto = articleService.findById(id);
+//        //2.대상 엔티티가 존재하면 삭제처리 후 메시지를 전송
+//        if(dto !=null){
+//            articleService.deleteById(id);
+//            redirectAttributes.addFlashAttribute("msg", "정상적으로 삭제되었습니다.");
+//        }
+//        return "redirect:/";
+//    }
 
 
     @PostMapping("/update")

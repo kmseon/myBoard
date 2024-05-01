@@ -2,12 +2,14 @@ package com.example.myboard.dto;
 
 import com.example.myboard.entity.Article;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ArticleDto {
     private Long id;
     private String title;

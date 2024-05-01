@@ -4,6 +4,8 @@ import com.example.myboard.dto.ArticleDto;
 import com.example.myboard.entity.Article;
 import com.example.myboard.repository.ArticleRepository;
 import jakarta.persistence.Id;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,28 +28,28 @@ public class ArticleService {
 
     }
 
-//    public List<ArticleDto> findAll() {
-//        List<ArticleDto> dtoList = new ArrayList<>();
-//        dtoList =  articleRepository.findAll()
-//                .stream()
-//                .map(x -> ArticleDto.fromArticleEntity(x))
-//                .toList();
-//        return dtoList;
-//    }
+    public List<ArticleDto> findAll() {
+        List<ArticleDto> dtoList = new ArrayList<>();
+        dtoList =  articleRepository.findAll()
+                .stream()
+                .map(x -> ArticleDto.fromArticleEntity(x))
+                .toList();
+        return dtoList;
+    }
 
     public void insertBoard(ArticleDto articleDto) {
         Article article = articleDto.fromArticleDto(articleDto);
         articleRepository.save(article);
     }
 
-//    public void insertArticle(ArticleDto dto) {
-//        Article article = Article.builder()
-//                        .title(dto.getTitle())
-//                        .content(dto.getContent())
-//                        .build();
-//
-//        articleRepository.save(article);
-//    }
+    public void insertArticle(ArticleDto dto) {
+        Article article = Article.builder()
+                        .title(dto.getTitle())
+                        .content(dto.getContent())
+                        .build();
+
+        articleRepository.save(article);
+    }
 
 
     public ArticleDto updateId(Long id) {
@@ -67,20 +69,23 @@ public class ArticleService {
     }
 
     public ArticleDto findById(Long id) {
-     return  ArticleDto.from(articleRepository.findById(id).orElse(null));
+
+        return  ArticleDto.from(articleRepository.findById(id).orElse(null));
     }
 
-        public void insertArticle(ArticleDto dto) {
-        Article article = Article.builder()
-                        .id(dto.getId())
-                        .title(dto.getTitle())
-                        .content(dto.getContent())
-                        .build();
-
-        articleRepository.save(article);
-    }
+//    public void deleteById(Long id) {
+//        Article article = articleRepository.findById(id).orElse(null);
+//        if(article == null){
+//            return;
+//        }else
+//            return ArticleDto.from(articleRepository.deleteById(id));
+//    }
 
     public void deleteById(Long id) {
         articleRepository.deleteById(id);
+    }
+
+    public Page<Article> pagingList(Pageable pageable) {
+        return articleRepository.findAll(pageable);
     }
 }
