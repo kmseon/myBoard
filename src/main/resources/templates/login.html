@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" th:src="@{/js/check.js}"></script>
+</head>
+<body>
+<h4>로그인</h4>
+<form id="frm" th:action="@{/login}" method="post" class="container" layout:fragment="content" th:object = "${userCreateForm}">
+    <div class="mb3">
+        <label class="form-label">사용자ID</label>
+        <input id="username" name="username" type="text" class="form-control">
+    </div>
+    <div class="mb3">
+        <label class="form-label">비밀번호</label>
+        <input id="password" name="password" type="password" class="form-control">
+    </div>
+
+    <input type="submit" value="로그인" class="btn btn-primary" >
+    <input type="button" value="다시" class="btn btn-primary" >
+</form>
+
+</body>
+</html>
